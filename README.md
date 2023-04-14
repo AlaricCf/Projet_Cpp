@@ -1,3 +1,3 @@
 # Projet_Cpp
 
-Le GitHUB de projet MasterMind
+# Le GitHUB de projet MasterMind
