@@ -16,7 +16,7 @@ class Partie{
 
         void setMatrice(int index, uint8_t valeur);
 
-        vector<uint8_t> get_code();
+        bool comparaison(vector<uint8_t> aComparer, int ligne);
 
     private :
 

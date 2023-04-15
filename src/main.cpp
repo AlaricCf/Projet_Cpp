@@ -76,40 +76,6 @@ vector<uint8_t> receptionCode(int ligne, bool codeSecret){
   return code;
 }
 
-bool comparaison(vector<uint8_t> aComparer, vector<uint8_t> vraiCode, int ligne){
-  Serial.println("Debut comparaison -  TEST");
-  Serial.print("Ligne n ");
-  Serial.println(ligne);
-  int x = 0; //compteur de coups gagnants
-
-  for(int n = 0; n < 4; n++){
-    Serial.println(vraiCode[n]);
-    for(int i = 0; i < 4; i++){
-      if((vraiCode[n] == aComparer[i]) && (n == i)){
-        Serial.println("PARFAIT -  TEST");
-        P.setMatrice(ligne*8+4+n,0);
-        aComparer[i] = 0;
-        x += 1;
-        break;
-      }
-      else{
-        if(vraiCode[n] == aComparer[i]){
-          Serial.println("BIEN -  TEST");
-          P.setMatrice(ligne*8+4+n,254);
-          aComparer[i] = 0;
-        }
-        else{
-          Serial.println("MAUVAIS -  TEST");
-        }
-      }
-    }
-  }
-  if(x == 4){
-    return true;
-  }
-  return false;
-}
-
 bool debut = true; //debut = choix de la combinaison secrete
 vector<uint8_t> tentative;
 int n = 8; //nombre de tentatives
@@ -135,7 +101,7 @@ void loop() {
     Serial.println("Debut jeu -  TEST");
     while(n > 0 && !victoire){
       tentative = receptionCode(8-n,false);
-      victoire = comparaison(tentative, P.get_code(), 8-n);
+      victoire = P.comparaison(tentative, 8-n);
       n -= 1;
     }
     if(victoire){
