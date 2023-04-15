@@ -10,17 +10,16 @@ class Partie{
 
         Partie();
 
-        vector<uint8_t> get_code();
-
-        void addValueCode(uint8_t x);
-
-        void delValueCode();
+        void set_code(vector<uint8_t> v);
 
         void displayMatrice();
 
         void setMatrice(int index, uint8_t valeur);
 
+        vector<uint8_t> get_code();
+
     private :
+
         vector<uint8_t> code;
         Matrice M;
 };

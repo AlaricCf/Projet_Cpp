@@ -5,7 +5,7 @@ Partie::Partie(){
     uint8_t digit[] = {D3, D4, D5, D6, D7, D8};
     for(int i=0; i<6; i++){pinMode(digit[i],OUTPUT);digitalWrite(digit[i], LOW);}
 
-    delay(1000); //Temps de préparation de la matrice
+    delay(3000); //Temps de préparation de la matrice
     M.displayMatrice();
 
     /*cout << "Nouvelle partie" << endl;
@@ -16,12 +16,8 @@ vector<uint8_t> Partie::get_code(){
     return code;
 }
 
-void Partie::addValueCode(uint8_t x){
-    code.push_back(x);
-}
-
-void Partie::delValueCode(){
-    code.pop_back();
+void Partie::set_code(vector<uint8_t> v){
+    code = v;
 }
 
 void Partie::displayMatrice(){

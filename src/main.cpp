@@ -13,21 +13,29 @@ BtnLED btnVert(D5, D3, 68);
 BtnLED btnBleu(D7, D6, 170);
 BtnLED btnJaune(D4, D8, 28);
 
-//Fonction attente de reception de la combinaison secrete...
-void receptionCode(){
+void affcihervect(vector<uint8_t> v){
+  for(int i = 0; i<4;i++){
+    Serial.print(v[i]);
+    Serial.print(' ');
+  }
+  Serial.println(' ');
+}
 
-  vector<uint8_t> combinaisonSecrete;
+//Fonction attente de reception de la combinaison secrete...
+vector<uint8_t> receptionCode(int ligne, bool codeSecret){
+
+  vector<uint8_t> code;
   bool codeValide = false;
   uint8_t c = 0;
 
   //Tant que le code ne fait pas 4 couleurs
   while(!codeValide){
-    if(combinaisonSecrete.size() < 4){
+    if(code.size() < 4){
       //"Ecoute" des boutons de couleur
       if((c = btnRouge.btnON()) || (c = btnVert.btnON()) || (c = btnBleu.btnON()) || (c = btnJaune.btnON())){
         Serial.println(c);
-        combinaisonSecrete.push_back(c);
-        P.setMatrice(23+combinaisonSecrete.size(),c);
+        code.push_back(c);
+        P.setMatrice(ligne*8-1+code.size(),c);
         c = 0;
       }
     }
@@ -36,37 +44,81 @@ void receptionCode(){
     if((c = btnValidation.btnON())){
 
       //Presse et relache = validation
-      if(c == 1){
-        if(combinaisonSecrete.size() == 4){
+      if((c == 1)){
+        if(code.size() == 4){
           codeValide = true;
-          for(int i = 0; i < 4; i++){P.setMatrice(24 + i, 255);}
-          Serial.println(combinaisonSecrete[0]);
-          Serial.println(combinaisonSecrete[1]);
-          Serial.println(combinaisonSecrete[2]);
-          Serial.println(combinaisonSecrete[3]);
+          
+          if(codeSecret){
+            P.set_code(code);
+            for(int i = 0; i < 4; i++){
+              P.setMatrice(ligne*8 + i, 255);
+              code[i] = 0;
+            }
+          }
+          Serial.println(code[0]);
+          Serial.println(code[1]);
+          Serial.println(code[2]);
+          Serial.println(code[3]);
         }
       }
         //Presse et maintenu = annuler la couleur precedente
-      if(c == 2 && combinaisonSecrete.size() > 0){
+      if(c == 2 && code.size() > 0){
         c = 0;
         Serial.println("Suppression - TEST");
-        Serial.println(combinaisonSecrete.size());
-        P.setMatrice(23 + combinaisonSecrete.size(), 255);
-        combinaisonSecrete.pop_back();
-        Serial.println(combinaisonSecrete.size());
+        Serial.println(code.size());
+        P.setMatrice(ligne*8 -1 + code.size(), 255);
+        code.pop_back();
+        Serial.println(code.size());
       }
     }
     P.displayMatrice();
   }
+  return code;
+}
+
+bool comparaison(vector<uint8_t> aComparer, vector<uint8_t> vraiCode, int ligne){
+  Serial.println("Debut comparaison -  TEST");
+  Serial.print("Ligne n ");
+  Serial.println(ligne);
+  int x = 0; //compteur de coups gagnants
+
+  for(int n = 0; n < 4; n++){
+    Serial.println(vraiCode[n]);
+    for(int i = 0; i < 4; i++){
+      if((vraiCode[n] == aComparer[i]) && (n == i)){
+        Serial.println("PARFAIT -  TEST");
+        P.setMatrice(ligne*8+4+n,0);
+        aComparer[i] = 0;
+        x += 1;
+        break;
+      }
+      else{
+        if(vraiCode[n] == aComparer[i]){
+          Serial.println("BIEN -  TEST");
+          P.setMatrice(ligne*8+4+n,254);
+          aComparer[i] = 0;
+        }
+        else{
+          Serial.println("MAUVAIS -  TEST");
+        }
+      }
+    }
+  }
+  if(x == 4){
+    return true;
+  }
+  return false;
 }
 
 bool debut = true; //debut = choix de la combinaison secrete
+vector<uint8_t> tentative;
+int n = 8; //nombre de tentatives
+bool victoire = false;
 
 void setup() {
   
   Wire.begin();
   Serial.begin(9600);
-  delay(3000);
 
 }
 
@@ -74,14 +126,24 @@ void loop() {
   Serial.println("Debut loop -  TEST");
 
   if(debut){
-      Serial.println("Debut reception -  TEST");
-      receptionCode();
-      Serial.println("Fin reception -  TEST");
-      debut = false;
+    Serial.println("Debut reception -  TEST");
+    tentative = receptionCode(3,true); //non utilisation car code secret donc pas utile
+    Serial.println("Fin reception -  TEST");
+    debut = false;
   }
   else{
-    delay(1000); //mettre code pour jeu
+    Serial.println("Debut jeu -  TEST");
+    while(n > 0 && !victoire){
+      tentative = receptionCode(8-n,false);
+      victoire = comparaison(tentative, P.get_code(), 8-n);
+      n -= 1;
+    }
+    if(victoire){
+      Serial.println("BRAVO VOUS AVEZ GAGNE");
+    }
+    else{
+      Serial.println("VOUS AVEZ PERDU :O");
+    }
   }
-  
   P.displayMatrice();
 }
