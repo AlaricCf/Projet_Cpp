@@ -27,39 +27,38 @@ void receptionCode(){
       if((c = btnRouge.btnON()) || (c = btnVert.btnON()) || (c = btnBleu.btnON()) || (c = btnJaune.btnON())){
         Serial.println(c);
         combinaisonSecrete.push_back(c);
-        P.setMatrice(24,c);
+        P.setMatrice(23+combinaisonSecrete.size(),c);
         c = 0;
       }
     }
 
     //Ecoute du bouton poussoir
     if((c = btnValidation.btnON())){
-      switch(c){
 
-        //Presse et relache = validation
-        case 1:
-          if(combinaisonSecrete.size() == 4){
-            codeValide = true;
-            for(int i = 0; i < 4; i++){P.setMatrice(24 + i, 255);}
-          }
-
+      //Presse et relache = validation
+      if(c == 1){
+        if(combinaisonSecrete.size() == 4){
+          codeValide = true;
+          for(int i = 0; i < 4; i++){P.setMatrice(24 + i, 255);}
+          Serial.println(combinaisonSecrete[0]);
+          Serial.println(combinaisonSecrete[1]);
+          Serial.println(combinaisonSecrete[2]);
+          Serial.println(combinaisonSecrete[3]);
+        }
+      }
         //Presse et maintenu = annuler la couleur precedente
-        case 2:
-          if(combinaisonSecrete.size() > 0){
-            c = 0;
-            P.setMatrice(23 + combinaisonSecrete.size(), 255);
-            combinaisonSecrete.pop_back();
-          }
+      if(c == 2 && combinaisonSecrete.size() > 0){
+        c = 0;
+        Serial.println("Suppression - TEST");
+        Serial.println(combinaisonSecrete.size());
+        P.setMatrice(23 + combinaisonSecrete.size(), 255);
+        combinaisonSecrete.pop_back();
+        Serial.println(combinaisonSecrete.size());
       }
     }
     P.displayMatrice();
   }
 }
-
-
-
-
-
 
 bool debut = true; //debut = choix de la combinaison secrete
 
@@ -67,7 +66,7 @@ void setup() {
   
   Wire.begin();
   Serial.begin(9600);
-  delay(5000);
+  delay(3000);
 
 }
 

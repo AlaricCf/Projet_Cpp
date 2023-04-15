@@ -10,8 +10,11 @@ uint8_t BtnLED::btnON(){
     pinMode(in,INPUT);
     pinMode(out,OUTPUT);
     digitalWrite(out,HIGH);
-    delay(500);
+    Serial.print("Btn LED ");
+    Serial.print(couleur);
+    Serial.println("-  TEST");
     if(!digitalRead(in)){
+        delay(300);
         return couleur;
     }
     return 0;
