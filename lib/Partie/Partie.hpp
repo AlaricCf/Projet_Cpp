@@ -1,7 +1,7 @@
 #ifndef DEF_PARTIE
 #define DEF_PARTIE
 
-#include <Matrice.hpp>
+#include "../Matrice/Matrice.hpp"
 
 using namespace std;
 
@@ -15,6 +15,12 @@ class Partie{
         void displayMatrice();
 
         void setMatrice(int index, uint8_t valeur);
+
+        void displayCoeur();
+
+        void displayOFF();
+
+        void displayFail();
 
         bool comparaison(vector<uint8_t> aComparer, int ligne);
 

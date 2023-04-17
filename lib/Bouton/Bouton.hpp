@@ -16,8 +16,6 @@ class Bouton{
 
         Bouton();
 
-        //Bouton(uint8_t o);
-
     protected :
         uint8_t in;
 };

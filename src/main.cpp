@@ -1,7 +1,6 @@
-#include <Partie.hpp>
-#include <BtnLED.hpp>
-#include <BtnPouss.hpp>
-#include <matrixDisplays.hpp>
+#include "../lib/Partie/Partie.hpp"
+#include "../lib/Bouton/BtnLED.hpp"
+#include "../lib/Bouton/BtnPouss.hpp"
 
 //Lancement d'une partie, avec creation de matrice...
 Partie P;
@@ -12,14 +11,6 @@ BtnLED btnRouge(D6, D5, 1);
 BtnLED btnVert(D5, D3, 68);
 BtnLED btnBleu(D7, D6, 170);
 BtnLED btnJaune(D4, D8, 28);
-
-void affcihervect(vector<uint8_t> v){
-  for(int i = 0; i<4;i++){
-    Serial.print(v[i]);
-    Serial.print(' ');
-  }
-  Serial.println(' ');
-}
 
 //Fonction attente de reception de la combinaison secrete...
 vector<uint8_t> receptionCode(int ligne, bool codeSecret){
@@ -81,6 +72,14 @@ vector<uint8_t> tentative;
 int n = 8; //nombre de tentatives
 bool victoire = false;
 
+void restart(){
+  delay(3000);
+  P.displayOFF();
+  debut = true;
+  victoire = false;
+  n = 8;
+}
+
 void setup() {
   
   Wire.begin();
@@ -90,26 +89,31 @@ void setup() {
 
 void loop() {
   Serial.println("Debut loop -  TEST");
-
-  if(debut){
-    Serial.println("Debut reception -  TEST");
-    tentative = receptionCode(3,true); //non utilisation car code secret donc pas utile
-    Serial.println("Fin reception -  TEST");
-    debut = false;
-  }
-  else{
-    Serial.println("Debut jeu -  TEST");
-    while(n > 0 && !victoire){
-      tentative = receptionCode(8-n,false);
-      victoire = P.comparaison(tentative, 8-n);
-      n -= 1;
-    }
-    if(victoire){
-      Serial.println("BRAVO VOUS AVEZ GAGNE");
+  if(!victoire){
+    if(debut){
+      
+      Serial.println("Debut reception -  TEST");
+      tentative = receptionCode(3,true); //non utilisation car code secret donc pas utile
+      Serial.println("Fin reception -  TEST");
+      debut = false;
     }
     else{
-      Serial.println("VOUS AVEZ PERDU :O");
+      Serial.println("Debut jeu -  TEST");
+      while(n > 0 && !victoire){
+        tentative = receptionCode(8-n,false);
+        victoire = P.comparaison(tentative, 8-n);
+        n -= 1;
+      }
+      if((n == 0) && !victoire){
+        P.displayFail();
+        restart();
+      }
     }
+    P.displayMatrice();
   }
-  P.displayMatrice();
+  else{
+    delay(2000);
+    P.displayCoeur();
+    restart();
+  }
 }

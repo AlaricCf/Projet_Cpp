@@ -20,37 +20,106 @@ void Partie::displayMatrice(){
     M.displayMatrice();
 }
 
+void Partie::displayCoeur(){
+  uint8_t matrixCoeur[64] = {
+    255, 68, 68, 255, 255, 68, 68, 255,
+    68, 0, 0, 68, 68, 0, 0, 68,
+    68, 0, 0, 0, 0, 0, 0, 68,
+    68, 0, 0, 0, 0, 0, 0, 68,
+    68, 0, 0, 0, 0, 0, 0, 68,
+    255, 68, 0, 0, 0, 0, 68, 255,
+    255, 255, 68, 0, 0, 68, 255, 255,
+    255, 255, 255, 68, 68, 255, 255, 255
+  };
+  for(int i = 0; i <64; i++){
+    M.setMatrice(i, matrixCoeur[i]);
+  }
+  M.displayMatrice();
+}
+
+void Partie::displayFail(){
+  uint8_t matrixFail[64] = {
+    255, 255, 0, 0, 0, 0, 255, 255,
+    255, 0, 0, 0, 0, 0, 0, 255,
+    0, 28, 0, 0, 0, 0, 28, 0,
+    0, 0, 28, 0, 0, 28, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 28, 28, 28, 28, 0, 0,
+    255, 0, 28, 28, 28, 28, 0, 255,
+    255, 255, 0, 0, 0, 0, 255, 255,
+  };
+  for(int i = 0; i <64; i++){
+    M.setMatrice(i, matrixFail[i]);
+  }
+  M.displayMatrice();
+}
+
+void Partie::displayOFF(){
+  for(int i = 0; i <64; i++){
+    M.setMatrice(i, 255);
+  }
+  M.displayMatrice();
+}
+
 void Partie::setMatrice(int index, uint8_t valeur){
     M.setMatrice(index, valeur);
+}
+
+vector<uint8_t> tri(vector<uint8_t> v){
+  uint8_t x;
+  if(v.size() == 0){return v;}
+  for(unsigned int i = 0; i < v.size()-1; i++){
+    for(unsigned int j = 0; j < v.size()-i-1; j++){
+      if(v[j] > v[j+1]){
+        x = v[j+1];
+        v[j+1] = v[j];
+        v[j] = x;
+      }
+    }  
+  }
+  return v;
 }
 
 bool Partie::comparaison(vector<uint8_t> aComparer, int ligne){
   Serial.println("Debut comparaison -  TEST");
   Serial.print("Ligne n ");
   Serial.println(ligne);
+
+  vector<uint8_t> correction;
+  vector<uint8_t> codeSecret = code;
   int x = 0; //compteur de coups gagnants
 
   for(int n = 0; n < 4; n++){
+    if(codeSecret[n] == aComparer[n]){
+      Serial.println("PARFAIT -  TEST");
+      correction.push_back(0);
+      aComparer[n] = 0;
+      codeSecret[n] = 0;
+      x += 1;
+    }
+  }
+
+  for(int n = 0; n < 4; n++){
     for(int i = 0; i < 4; i++){
-      if((code[n] == aComparer[i]) && (n == i)){
-        Serial.println("PARFAIT -  TEST");
-        setMatrice(ligne*8+4+n,0);
+      if((codeSecret[n] == aComparer[i]) && codeSecret[n]){
+        Serial.println("BIEN -  TEST");
+        correction.push_back(254);
         aComparer[i] = 0;
-        x += 1;
-        break;
+        codeSecret[n] = 0;
       }
       else{
-        if(code[n] == aComparer[i]){
-          Serial.println("BIEN -  TEST");
-          setMatrice(ligne*8+4+n,254);
-          aComparer[i] = 0;
-        }
-        else{
-          Serial.println("MAUVAIS -  TEST");
-        }
+        Serial.println("MAUVAIS -  TEST");
       }
     }
   }
+
+  Serial.println("DEBUT TRI -  TEST");
+  correction = tri(correction);
+  Serial.println("FIN TRI -  TEST");
+  for(unsigned int i = 0; i < correction.size(); i++){
+    setMatrice(ligne*8+7-i, correction[i]);
+  }
+
   if(x == 4){
     return true;
   }
