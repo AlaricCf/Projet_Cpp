@@ -11,19 +11,19 @@ class Partie{
 
         Partie();
 
-        void set_code(vector<uint8_t> v);
+        void set_code(vector<uint8_t> c);
 
         void displayMatrice();
 
         void setMatrice(int index, uint8_t valeur);
 
-        void displayCoeur();
+        void displayShape(const uint8_t mat[64], unsigned long time = 0);
 
         void displayOFF();
 
-        void displayFail();
+        void afficherReponse();
 
-        bool comparaison(vector<uint8_t> aComparer, int ligne);
+        int comparaison(vector<uint8_t> aComparer, int ligne);
 
     private :
 

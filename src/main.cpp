@@ -70,6 +70,7 @@ vector<uint8_t> receptionCode(int ligne, bool codeSecret){
 bool debut = true; //debut = choix de la combinaison secrete
 vector<uint8_t> tentative;
 int n = 8; //nombre de tentatives
+int t = 0;
 bool victoire = false;
 
 void restart(){
@@ -101,11 +102,17 @@ void loop() {
       Serial.println("Debut jeu -  TEST");
       while(n > 0 && !victoire){
         tentative = receptionCode(8-n,false);
-        victoire = P.comparaison(tentative, 8-n);
+        t = P.comparaison(tentative, 8-n);
+        if(t == 0){
+          P.displayShape(MatriceDisplays::matrixCroix, 1000);
+        }
+        victoire = (t == 8);
         n -= 1;
       }
       if((n == 0) && !victoire){
-        P.displayFail();
+        P.afficherReponse();
+        delay(2000);
+        P.displayShape(MatriceDisplays::matrixFail);
         restart();
       }
     }
@@ -113,7 +120,7 @@ void loop() {
   }
   else{
     delay(2000);
-    P.displayCoeur();
+    P.displayShape(MatriceDisplays::matrixCoeur);
     restart();
   }
 }
