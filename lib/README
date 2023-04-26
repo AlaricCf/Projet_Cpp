@@ -20,10 +20,10 @@ Par exemple, la struture du dosier pour deux librairies "Matrice" et "Partie":
 |--src
    |- main.c
 
-Et dans le "main.c" :
+Et dans le "main.cpp" :
 
-#include <Matrice.h>
-#include <Partie.h>
+#include <Matrice.hpp>
+#include <Partie.hpp>
 
 int main ()
 {

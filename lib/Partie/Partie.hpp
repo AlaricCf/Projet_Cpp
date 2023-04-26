@@ -13,13 +13,13 @@ class Partie{
 
         void set_code(vector<uint8_t> c);
 
-        void displayMatrice();
+        void afficherMatrice();
 
         void setMatrice(int index, uint8_t valeur);
 
-        void displayShape(const uint8_t mat[64], unsigned long time = 0);
+        void afficherForme(const uint8_t mat[64], unsigned long time = 0);
 
-        void displayOFF();
+        void matriceOFF();
 
         void afficherReponse();
 

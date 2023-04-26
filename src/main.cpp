@@ -2,6 +2,10 @@
 #include "../lib/Bouton/BtnLED.hpp"
 #include "../lib/Bouton/BtnPouss.hpp"
 
+///////////////////////////////////////////////
+//                     MAIN                 //
+/////////////////////////////////////////////
+
 //Lancement d'une partie, avec creation de matrice...
 Partie P;
 
@@ -12,21 +16,34 @@ BtnLED btnVert(D5, D3, 68);
 BtnLED btnBleu(D7, D6, 170);
 BtnLED btnJaune(D4, D8, 28);
 
-//Fonction attente de reception de la combinaison secrete...
+bool debut = true; //debut = choix de la combinaison secrete
+vector<uint8_t> tentative;
+int nombreTentatives = 8; //nombre de tentatives restantes
+int couleurTrouvee = 0;
+bool victoire = false;
+
+
+
+//Fonction attente de reception d'une combinaison...
 vector<uint8_t> receptionCode(int ligne, bool codeSecret){
 
-  vector<uint8_t> code;
+  vector<uint8_t> combinaison;
   bool codeValide = false;
   uint8_t c = 0;
 
   //Tant que le code ne fait pas 4 couleurs
   while(!codeValide){
-    if(code.size() < 4){
-      //"Ecoute" des boutons de couleur
+    if(combinaison.size() < 4){
+      //Ecoute des boutons de couleur
       if((c = btnRouge.btnON()) || (c = btnVert.btnON()) || (c = btnBleu.btnON()) || (c = btnJaune.btnON())){
-        Serial.println(c);
-        code.push_back(c);
-        P.setMatrice(ligne*8-1+code.size(),c);
+        combinaison.push_back(c);
+        if(codeSecret){
+          P.setMatrice(ligne*8+1+combinaison.size(),c);
+          P.setMatrice(ligne*8+9+combinaison.size(),c);
+        }
+        else{
+          P.setMatrice(ligne*8-1+combinaison.size(),c);
+        }
         c = 0;
       }
     }
@@ -36,91 +53,91 @@ vector<uint8_t> receptionCode(int ligne, bool codeSecret){
 
       //Presse et relache = validation
       if((c == 1)){
-        if(code.size() == 4){
+        if(combinaison.size() == 4){
           codeValide = true;
           
           if(codeSecret){
-            P.set_code(code);
+            P.set_code(combinaison);
             for(int i = 0; i < 4; i++){
-              P.setMatrice(ligne*8 + i, 255);
-              code[i] = 0;
+              P.setMatrice(ligne*8 + 2 + i, 255);
+              P.setMatrice(ligne*8 + 10 + i, 255);
+              combinaison[i] = 0;
             }
           }
-          Serial.println(code[0]);
-          Serial.println(code[1]);
-          Serial.println(code[2]);
-          Serial.println(code[3]);
         }
       }
-        //Presse et maintenu = annuler la couleur precedente
-      if(c == 2 && code.size() > 0){
+      
+      //Presse et maintenu = annuler la couleur precedente
+      if(c == 2 && combinaison.size() > 0){
         c = 0;
-        Serial.println("Suppression - TEST");
-        Serial.println(code.size());
-        P.setMatrice(ligne*8 -1 + code.size(), 255);
-        code.pop_back();
-        Serial.println(code.size());
+        if(codeSecret){
+          P.setMatrice(ligne*8+1+combinaison.size(), 255);
+          P.setMatrice(ligne*8+9+combinaison.size(), 255);
+        }
+        else{
+          P.setMatrice(ligne*8-1+combinaison.size(), 255);
+        }
+        combinaison.pop_back();
       }
     }
-    P.displayMatrice();
+    P.afficherMatrice();
   }
-  return code;
+  return combinaison;
 }
-
-bool debut = true; //debut = choix de la combinaison secrete
-vector<uint8_t> tentative;
-int n = 8; //nombre de tentatives
-int t = 0;
-bool victoire = false;
 
 void restart(){
   delay(3000);
-  P.displayOFF();
+  P.matriceOFF();
   debut = true;
   victoire = false;
-  n = 8;
+  nombreTentatives = 8;
 }
 
+//SETUP de l'Arduino suivi de la boucle LOOP qui exécute le programme
 void setup() {
-  
   Wire.begin();
   Serial.begin(9600);
-
 }
 
 void loop() {
   Serial.println("Debut loop -  TEST");
-  if(!victoire){
-    if(debut){
-      
-      Serial.println("Debut reception -  TEST");
-      tentative = receptionCode(3,true); //non utilisation car code secret donc pas utile
-      Serial.println("Fin reception -  TEST");
-      debut = false;
-    }
-    else{
-      Serial.println("Debut jeu -  TEST");
-      while(n > 0 && !victoire){
-        tentative = receptionCode(8-n,false);
-        t = P.comparaison(tentative, 8-n);
-        if(t == 0){
-          P.displayShape(MatriceDisplays::matrixCroix, 1000);
-        }
-        victoire = (t == 8);
-        n -= 1;
-      }
-      if((n == 0) && !victoire){
-        P.afficherReponse();
-        delay(2000);
-        P.displayShape(MatriceDisplays::matrixFail);
-        restart();
-      }
-    }
-    P.displayMatrice();
+
+  if(debut){
+    
+    Serial.println("Debut reception -  TEST");
+    tentative = receptionCode(3,true); //non utilisation car code secret donc pas utile
+    Serial.println("Fin reception -  TEST");
+    debut = false;
   }
   else{
-    delay(2000);
-    P.displayShape(MatriceDisplays::matrixCoeur);
-    restart();
+    Serial.println("Debut jeu -  TEST");
+    //boucle tant que le joueur n'a pas gagne ou perdu
+    while(nombreTentatives > 0 && !victoire){
+
+      tentative = receptionCode(8-nombreTentatives,false);
+      couleurTrouvee = P.comparaison(tentative, 8-nombreTentatives);
+
+      if(couleurTrouvee == 0){
+        P.afficherForme(MatriceDisplays::matriceCroix, 1000);
+      }
+
+      victoire = (couleurTrouvee == 8);
+      nombreTentatives -= 1;
+    }
+
+    //gagne?
+    if(victoire){
+      delay(500);
+      P.afficherForme(MatriceDisplays::matriceCoeur);
+      restart();
+    }
+
+    //perdu?
+    if((nombreTentatives == 0) && !victoire){
+      P.afficherForme(MatriceDisplays::matriceEchec);
+      delay(2000);
+      P.afficherReponse();
+      restart();
+    }
   }
 }

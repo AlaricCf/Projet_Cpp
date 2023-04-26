@@ -2,8 +2,6 @@
 #define DEF_BOUTON
 
 #include <iostream>
-#include <cstdint>
-#include <vector>
 
 #include <Arduino.h>
 #include <Wire.h>

@@ -1,26 +1,28 @@
 #include <Partie.hpp>
 
 Partie::Partie(){
-    Serial.println("Nouvelle partie");
-    uint8_t digit[] = {D3, D4, D5, D6, D7, D8};
-    for(int i=0; i<6; i++){pinMode(digit[i],OUTPUT);digitalWrite(digit[i], LOW);}
 
-    delay(3000); //Temps de préparation de la matrice
+    //extinction des boutons Led
+    uint8_t digit[] = {D3, D4, D5, D6, D7, D8};
+    for(int i = 0; i < 6; i++){
+      pinMode(digit[i],OUTPUT);
+      digitalWrite(digit[i], LOW);
+    }
+
+    delay(2000); //Temps de préparation de la matrice
     M.afficherMatrice();
 
-    /*cout << "Nouvelle partie" << endl;
-    cout << "Il faut donc choisir une combinaison secrete" << endl;*/
 }
 
 void Partie::set_code(vector<uint8_t> c){
     code = c;
 }
 
-void Partie::displayMatrice(){
+void Partie::afficherMatrice(){
     M.afficherMatrice();
 }
 
-void Partie::displayShape(const uint8_t mat[64],  unsigned long time){
+void Partie::afficherForme(const uint8_t mat[64],  unsigned long time){ //time = 0 par defaut
   if(!time){
     for(int i = 0; i < 64; i++){
       M[i]->setColor(mat[i]);
@@ -38,7 +40,7 @@ void Partie::displayShape(const uint8_t mat[64],  unsigned long time){
   M.afficherMatrice();
 }
 
-void Partie::displayOFF(){
+void Partie::matriceOFF(){
   for(int i = 0; i < 64; i++){
     M[i]->setColor(255);
   }
@@ -46,9 +48,9 @@ void Partie::displayOFF(){
 }
 
 void Partie::afficherReponse(){
-  for(int i = 15; i < 47; i++){
-    M[i]->setColor(255);
-  }
+
+  this->matriceOFF();
+
   for(int i = 26; i < 30; i++){
     M[i]->setColor(code[i-26]);
     M[i+8]->setColor(code[i-26]);
@@ -60,28 +62,31 @@ void Partie::setMatrice(int index, uint8_t valeur){
     M[index]->setColor(valeur);
 }
 
-vector<uint8_t> tri(vector<uint8_t> v){
-  uint8_t x;
-  if(v.size() == 0){return v;}
-  for(unsigned int i = 0; i < v.size()-1; i++){
-    for(unsigned int j = 0; j < v.size()-i-1; j++){
-      if(v[j] > v[j+1]){
-        x = v[j+1];
-        v[j+1] = v[j];
-        v[j] = x;
+vector<uint8_t> tri(vector<uint8_t> vect){
+  
+  uint8_t aux;
+
+  if(vect.size() == 0){
+    return vect;
+  }
+
+  for(unsigned int i = 0; i < vect.size()-1; i++){
+    for(unsigned int j = 0; j < vect.size()-i-1; j++){
+      if(vect[j] > vect[j+1]){
+        aux = vect[j+1];
+        vect[j+1] = vect[j];
+        vect[j] = aux;
       }
     }  
   }
-  return v;
+  return vect;
 }
 
 int Partie::comparaison(vector<uint8_t> aComparer, int ligne){
-  Serial.println("Debut comparaison -  TEST");
-  Serial.print("Ligne n ");
-  Serial.println(ligne);
-
+  
   vector<uint8_t> correction;
   vector<uint8_t> codeSecret = code;
+  
   int x = 0; //compteur de coups gagnants
 
   for(int n = 0; n < 4; n++){
@@ -109,12 +114,11 @@ int Partie::comparaison(vector<uint8_t> aComparer, int ligne){
     }
   }
 
-  Serial.println("DEBUT TRI -  TEST");
   correction = tri(correction);
-  Serial.println("FIN TRI -  TEST");
+
   for(unsigned int i = 0; i < correction.size(); i++){
     setMatrice(ligne*8+7-i, correction[i]);
   }
-
+  this->afficherMatrice();
   return x;
 }
