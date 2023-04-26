@@ -21,35 +21,15 @@ void Partie::displayMatrice(){
 }
 
 void Partie::displayCoeur(){
-  uint8_t matrixCoeur[64] = {
-    255, 68, 68, 255, 255, 68, 68, 255,
-    68, 0, 0, 68, 68, 0, 0, 68,
-    68, 0, 0, 0, 0, 0, 0, 68,
-    68, 0, 0, 0, 0, 0, 0, 68,
-    68, 0, 0, 0, 0, 0, 0, 68,
-    255, 68, 0, 0, 0, 0, 68, 255,
-    255, 255, 68, 0, 0, 68, 255, 255,
-    255, 255, 255, 68, 68, 255, 255, 255
-  };
   for(int i = 0; i <64; i++){
-    M.setMatrice(i, matrixCoeur[i]);
+    M.setMatrice(i, MatriceDisplays::matrixCoeur[i]);
   }
   M.displayMatrice();
 }
 
 void Partie::displayFail(){
-  uint8_t matrixFail[64] = {
-    255, 255, 0, 0, 0, 0, 255, 255,
-    255, 0, 0, 0, 0, 0, 0, 255,
-    0, 28, 0, 0, 0, 0, 28, 0,
-    0, 0, 28, 0, 0, 28, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 28, 28, 28, 28, 0, 0,
-    255, 0, 28, 28, 28, 28, 0, 255,
-    255, 255, 0, 0, 0, 0, 255, 255,
-  };
   for(int i = 0; i <64; i++){
-    M.setMatrice(i, matrixFail[i]);
+    M.setMatrice(i, MatriceDisplays::matrixFail[i]);
   }
   M.displayMatrice();
 }

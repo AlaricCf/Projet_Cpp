@@ -2,6 +2,7 @@
 #define DEF_PARTIE
 
 #include "../Matrice/Matrice.hpp"
+#include "../MatriceDisplays/MatriceDisplays.hpp"
 
 using namespace std;
 
