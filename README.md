@@ -1,6 +1,10 @@
-# Projet_Cpp
-Le GitHUB de projet du meilleur MasterMind de l'univers :p
+# Projet_Cpp : Master Mind
 
-git add --all
-git commit -m "texte"
-git push
+Le Matser Mind est un jeu de réflexion entre deux joueurs.
+
+# Fonctionnement
+
+Un premier 
+
+
+
