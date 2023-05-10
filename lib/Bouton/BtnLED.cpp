@@ -14,7 +14,7 @@ uint8_t BtnLED::btnON(){
     digitalWrite(out,HIGH);
     
     if(!digitalRead(in)){
-        delay(300);
+        delay(300); 
         return couleur;
     }
 
