@@ -7,18 +7,19 @@ Par exemple, la struture du dosier pour deux librairies "Matrice" et "Partie":
 |--lib
 |  |
 |  |--Matrice
-|  |  |- Matrice.c
-|  |  |- Matrice.h
+|  |  |- Matrice.cpp
+|  |  |- Matrice.hpp
 |  |
 |  |--Partie
-|  |  |- Partie.c
-|  |  |- Partie.h
+|  |  |- Partie.cpp
+|  |  |- Partie.hpp
 |  |
 |  |- README --> THIS FILE
 |
 |- platformio.ini
 |--src
-   |- main.c
+   |- main.cpp
+   |- grove_two_rgb_led_matrix.cpp
 
 Et dans le "main.cpp" :
 
