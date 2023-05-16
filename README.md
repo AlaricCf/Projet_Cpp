@@ -14,7 +14,7 @@ Toutes les librairies/classes personnelles sont dans le dossier lib.
 
 Il est donc possible de compiler et de téléverser le code via VSCode en utilisant ces fichiers.
 
-L'archive MasterMind.rar ou MasterMind.zip permet de compiler et de téléverser le code grâce à l'IDE Arduino. Pour cela, il s'agit de la décompresser, de lancer MasterMind.ino, de sélectionner NodeMCU 1.0 (ESP-12E Module) afin de pouvoir executer le code.
+L'archive MasterMind.zip permet de compiler et de téléverser le code grâce à l'IDE Arduino. Pour cela, il s'agit de la décompresser, de lancer MasterMind.ino, de sélectionner NodeMCU 1.0 (ESP-12E Module) afin de pouvoir executer le code.
 
 # Fonctionnement
 
