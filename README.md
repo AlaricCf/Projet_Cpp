@@ -21,6 +21,6 @@ Pour sélectionner une combinaison, on utilise les boutons de couleurs Rouge, Ve
 Après validation, le second joueur peut essayer de trouver la combinaison secrète de la même façcon.
 
 Correction : 
-Une LED rouge indique une couleur bien positionnée, une blanche une couleur mal positionnée.
+Une LED rouge indique une couleur bien positionnée, une blanche une couleur mal positionnée et une croix aucune bonne réponse/couleur.
 
 Le joueur 2 a 8 tentatives pour parvenir à trouver la combinaison. En cas d'échec, celle-ci s'affichera à la fin.
