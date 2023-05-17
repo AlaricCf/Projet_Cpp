@@ -27,4 +27,6 @@ Après validation, le second joueur peut essayer de trouver la combinaison secr�
 Correction : 
 Une LED rouge indique une couleur bien positionnée, une blanche une couleur mal positionnée et une croix aucune bonne réponse/couleur.
 
-Le joueur 2 a 8 tentatives pour parvenir à trouver la combinaison. En cas d'échec, celle-ci s'affichera à la fin.
+Le 2ème joueur a 8 tentatives pour parvenir à trouver la combinaison. En cas d'échec, celle-ci s'affichera à la fin.
+
+Le jeu redémarre alors automatiquement.
