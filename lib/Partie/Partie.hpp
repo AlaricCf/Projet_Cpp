@@ -11,7 +11,7 @@ class Partie{
 
         Partie();
 
-        void set_code(vector<uint8_t> c);
+        void setCode(vector<uint8_t> c);
 
         void afficherMatrice();
 
