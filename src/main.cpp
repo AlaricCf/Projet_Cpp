@@ -57,7 +57,7 @@ vector<uint8_t> receptionCode(int ligne, bool codeSecret){
           codeValide = true;
           
           if(codeSecret){
-            P.set_code(combinaison);
+            P.setCode(combinaison);
             for(int i = 0; i < 4; i++){
               P.setMatrice(ligne*8 + 2 + i, 255);
               P.setMatrice(ligne*8 + 10 + i, 255);
