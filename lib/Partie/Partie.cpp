@@ -62,6 +62,7 @@ void Partie::setMatrice(int index, uint8_t valeur){
     M[index]->setColor(valeur);
 }
 
+//Permet de trier les corrections rouges à droite et blanches à gauche
 vector<uint8_t> tri(vector<uint8_t> vect){
   
   uint8_t aux;
