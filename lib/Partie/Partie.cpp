@@ -14,7 +14,7 @@ Partie::Partie(){
 
 }
 
-void Partie::set_code(vector<uint8_t> c){
+void Partie::setCode(vector<uint8_t> c){
     code = c;
 }
 
