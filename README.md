@@ -30,3 +30,5 @@ Une LED rouge indique une couleur bien positionnée, une blanche une couleur mal
 Le 2ème joueur a 8 tentatives pour parvenir à trouver la combinaison. En cas d'échec, celle-ci s'affichera à la fin.
 
 Le jeu redémarre alors automatiquement.
+
+Ce fonctionnement est explicité au travers des diagrammes des cas d'utilisation, des classes et de séquence présents sur ce GitHub.
